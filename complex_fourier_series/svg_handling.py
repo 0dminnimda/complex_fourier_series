@@ -57,18 +57,19 @@ def parse_paths(path_elements: List[str]) -> Path:
 
 def create_path_function(
         path: Path, scalar: complex = DEFAULT_SCALAR,
-        bias: complex = DEFAULT_BIAS) -> FLOAT_TO_COMPLEX:
+        offset: complex = DEFAULT_BIAS) -> FLOAT_TO_COMPLEX:
 
     def f(t: float) -> complex:
-        return scalar * (path.point(t) + bias)
+        return scalar * (path.point(t) + offset)
 
     return f
 
 
 def create_path_function_from_file(
         filename: str, scalar: complex = DEFAULT_SCALAR,
-        bias: complex = DEFAULT_BIAS) -> FLOAT_TO_COMPLEX:
+        offset: complex = DEFAULT_BIAS) -> FLOAT_TO_COMPLEX:
 
     return create_path_function(
         parse_paths(get_svg_path_elements(filename)),
-        scalar, bias)
+        scalar, offset)
+
