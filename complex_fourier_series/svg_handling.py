@@ -70,7 +70,7 @@ def create_path_function_from_file(
         bias: complex = DEFAULT_BIAS) -> FLOAT_TO_COMPLEX:
 
     return create_path_function(
-        parse_paths(get_svg_path_elements(name)),
+        parse_paths(get_svg_path_elements(filename)),
         scalar, bias)
 
 
