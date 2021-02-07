@@ -60,7 +60,7 @@ def create_path_function(
         bias: complex = DEFAULT_BIAS) -> FLOAT_TO_COMPLEX:
 
     def f(t: float) -> complex:
-        return scalar * path.point(t) + bias
+        return scalar * (path.point(t) + bias)
 
     return f
 
