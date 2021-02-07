@@ -46,7 +46,7 @@ def parse_paths(path_elements: List[str]) -> Path:
     for string in path_elements:
         segments.extend(parse_path(string))
 
-    path = Path(segments)
+    path = Path(*segments)
 
     # pre-calculate and cache all values
     # for the class to work
