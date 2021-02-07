@@ -4,10 +4,10 @@
 from cmath import exp, tau
 from typing import List
 
-from scipy.integrate import quad
+import numpy as np
+from quadpy import quad
 
 from .svg_handling import FLOAT_TO_COMPLEX
-
 
 TAU_I: complex = tau * 1j
 
@@ -24,7 +24,10 @@ def create_nth_constant_function(
 def calculate_nth_constant(
         n: int, constant_func: FLOAT_TO_COMPLEX) -> complex:
 
-    return quad(constant_func, 0, 1)
+    def array_f(array: np.array):
+        return np.array(list(map(constant_func, array)))
+
+    return quad(array_f, 0., 1., limit=30000)[0]
 
 
 def create_nth_series_function(
