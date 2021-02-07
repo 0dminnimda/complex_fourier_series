@@ -46,3 +46,35 @@ def get_frequency_by_index(index: int) -> int:
 
     return ((index + 1) // 2) * sign
 
+
+class Series:
+    __slots__ = "_formulas",
+
+    def __init__(self) -> None:
+        self._formulas: List[FLOAT_TO_COMPLEX] = []
+
+    def create_formulas(
+            self, quantity: int, path_func: FLOAT_TO_COMPLEX) -> None:
+
+        self._formulas.clear()
+
+        for i in range(quantity):
+            n = get_frequency_by_index(i)
+
+            constant_func: FLOAT_TO_COMPLEX = (
+                create_nth_constant_function(
+                    n, path_func))
+
+            constant: complex = (
+                calculate_nth_constant(
+                    n, constant_func))
+
+            self._formulas.append(
+                create_nth_series_function(
+                    n, constant))
+
+    def evaluate_all(self, time: float) -> List[complex]:
+        return [
+            formula(time)
+            for formula in self._formulas
+        ]
