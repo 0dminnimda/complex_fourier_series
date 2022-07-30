@@ -4,7 +4,6 @@
 from typing import List, Tuple, Union
 
 import pygame as pg
-from pygame.locals import K_ESCAPE, KEYDOWN, QUIT
 from pygame.math import Vector2
 
 from .series import Series
@@ -44,11 +43,11 @@ def main_loop(size: Tuple[int, int], path_func: FLOAT_TO_COMPLEX,
 
     while 1:
         for event in pg.event.get():
-            if event.type == QUIT:
+            if event.type == pg.QUIT:
                 return None
 
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
                     return None
 
         display.fill(BLACK)
@@ -64,8 +63,8 @@ def main_loop(size: Tuple[int, int], path_func: FLOAT_TO_COMPLEX,
             del path[:int(time_divider)]
 
 
-def draw(display: pg.Surface, series: Series, offset: complex,
-         time: float, path: List[complex]) -> None:
+def draw(display: pg.surface.Surface, series: Series, offset: complex,
+         time: float, path: List[Vector2]) -> None:
 
     values: List[complex] = series.evaluate_all(time)
 
@@ -84,7 +83,7 @@ def draw(display: pg.Surface, series: Series, offset: complex,
     draw_path(display, path)
 
 
-def draw_arrow(display: pg.Surface,
+def draw_arrow(display: pg.surface.Surface,
                from_val: complex,
                to_val: complex) -> None:
 
@@ -95,7 +94,7 @@ def draw_arrow(display: pg.Surface,
                  VECTOR_WIDTH)
 
 
-def draw_path(display: pg.Surface,
+def draw_path(display: pg.surface.Surface,
               path: List[Vector2]) -> None:
 
     if len(path) < 2:
