@@ -1,7 +1,8 @@
 #!/usr/bin/python3.8
 # -*- coding: utf-8 -*-
 
-from typing import List, Tuple, Union
+import os
+from typing import List, Optional, Tuple, Union
 
 import pygame as pg
 from pygame.math import Vector2
@@ -29,7 +30,8 @@ PATH_WIDTH = 1
 
 
 def main_loop(size: Tuple[int, int], path_func: FLOAT_TO_COMPLEX,
-              quantity: int, time_divider: Union[int, float], ):
+              quantity: int, time_divider: Union[int, float],
+              save: Optional[str] = None):
     display = pg.display.set_mode(size)
 
     series: Series = Series()
@@ -41,26 +43,45 @@ def main_loop(size: Tuple[int, int], path_func: FLOAT_TO_COMPLEX,
 
     offset: complex = complex(*size) / 2
 
-    while 1:
+    if save is not None:
+        folder = f"{save}/q{quantity}"
+        save = folder + "/screenshot-{time}.jpg"
+
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+    result = False
+    done = False
+    while not done:
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                return None
+                done = True
+                result = True
 
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    return None
+                    done = True
+                    result = True
 
         display.fill(BLACK)
 
         draw(display, series, offset, time/time_divider, path)
 
-        time += 1
+        if save is not None:
+            pg.image.save(display, save.format(time=time))
 
         pg.display.flip()
+
+        time += 1
+
+        if save is not None and time == int(time_divider):
+            done = True  # we need only one cycle at most
 
         if time == int(2 * time_divider):
             time = 0
             del path[:int(time_divider)]
+
+    return result
 
 
 def draw(display: pg.surface.Surface, series: Series, offset: complex,
