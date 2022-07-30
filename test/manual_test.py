@@ -26,10 +26,20 @@ vals = {
     "youtube": (),
 }
 
-quantity = 10
-main_loop(
-    (900, 700),
-    create_path_function_from_file(f"./icons/{name}.svg", *vals[name]),
-    quantity,
-    5000,
-)
+# quantity = 10
+# main_loop(
+#     (900, 700),
+#     create_path_function_from_file(f"./icons/{name}.svg", *vals[name]),
+#     quantity,
+#     5000,
+# )
+
+for quantity in range(1, 50):
+    if main_loop(
+        (900, 700),
+        create_path_function_from_file(f"./icons/{name}.svg", *vals[name]),
+        quantity,
+        500,
+        save="animation"
+    ):
+        break
