@@ -104,15 +104,35 @@ def draw(display: pg.surface.Surface, series: Series, offset: complex,
     draw_path(display, path)
 
 
-def draw_arrow(display: pg.surface.Surface,
-               from_val: complex,
-               to_val: complex) -> None:
+def draw_arrow(
+    display: pg.surface.Surface,
+    from_val: complex,
+    to_val: complex,
+    end_fraction: float = 0.3,
+) -> None:
 
-    pg.draw.line(display,
-                 VECTOR_COLOR,
-                 complex_to_tuple(from_val),
-                 complex_to_tuple(to_val),
-                 VECTOR_WIDTH)
+    direction = to_val - from_val
+
+    tip = direction * end_fraction
+    body = to_val - tip
+
+    pg.draw.line(
+        display,
+        VECTOR_COLOR,
+        complex_to_tuple(from_val),
+        complex_to_tuple(body),
+        VECTOR_WIDTH,
+    )
+
+    points = [body + rotate90(tip) / 3, body - rotate90(tip) / 3, to_val]
+
+    pg.draw.polygon(
+        display, VECTOR_COLOR, [complex_to_tuple(i) for i in points], VECTOR_WIDTH
+    )
+
+
+def rotate90(num: complex) -> complex:
+    return 1j * num.real - num.imag
 
 
 def draw_path(display: pg.surface.Surface,
