@@ -6,7 +6,7 @@ Complex Fourier Series is essentially the same but we use complex numbers :P
 
 So in this animation more and more "arrows" or "circles" are used to recreate the image below (or rather an svg path of it)
 
-![animation](animation\mixed_animation.gif)
+![animation](animation/mixed_animation.gif)
 
 ![image of pi](icons/pi.png)
 
