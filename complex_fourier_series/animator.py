@@ -20,7 +20,8 @@ __all__ = (
     "draw",
     "draw_arrow",
     "draw_path",
-    "complex_to_tuple")
+    "complex_to_tuple",
+)
 
 BLACK = (0, 0, 0)
 VECTOR_COLOR = (255, 0, 0)
@@ -29,26 +30,33 @@ PATH_COLOR = (0, 255, 0)
 PATH_WIDTH = 1
 
 
-def main_loop(size: Tuple[int, int], path_func: FLOAT_TO_COMPLEX,
-              quantity: int, time_divider: Union[int, float],
-              save: Optional[str] = None):
+def main_loop(
+    size: Tuple[int, int],
+    path_func: FLOAT_TO_COMPLEX,
+    quantity: int,
+    time_divider: Union[int, float],
+    save: Optional[str] = None,
+    save_from: int = 0,
+    time_start: int = 0,
+    time_end: int = -1,
+):
+
     display = pg.display.set_mode(size)
 
     series: Series = Series()
     series.create_formulas(quantity, path_func)
 
-    time: int = 0
+    time: int = time_start
 
     path: List[Vector2] = []
 
     offset: complex = complex(*size) / 2
 
     if save is not None:
-        folder = f"{save}/q{quantity}"
-        save = folder + "/screenshot-{time}.jpg"
+        if not os.path.exists(save):
+            os.makedirs(save)
 
-        if not os.path.exists(folder):
-            os.makedirs(folder)
+        save = f"{save}/screenshot-q{quantity}"
 
     result = False
     done = False
@@ -65,27 +73,32 @@ def main_loop(size: Tuple[int, int], path_func: FLOAT_TO_COMPLEX,
 
         display.fill(BLACK)
 
-        draw(display, series, offset, time/time_divider, path)
+        draw(display, series, offset, time / time_divider, path)
 
-        if save is not None:
-            pg.image.save(display, save.format(time=time))
+        if save is not None and time >= save_from:
+            pg.image.save(display, f"{save}-{time}.jpg")
 
         pg.display.flip()
 
         time += 1
 
-        if save is not None and time == int(time_divider):
-            done = True  # we need only one cycle at most
+        if time == time_end:
+            done = True
 
         if time == int(2 * time_divider):
             time = 0
-            del path[:int(time_divider)]
+            del path[: int(time_divider)]
 
     return result
 
 
-def draw(display: pg.surface.Surface, series: Series, offset: complex,
-         time: float, path: List[Vector2]) -> None:
+def draw(
+    display: pg.surface.Surface,
+    series: Series,
+    offset: complex,
+    time: float,
+    path: List[Vector2],
+) -> None:
 
     values: List[complex] = series.evaluate_all(time)
 
@@ -93,13 +106,10 @@ def draw(display: pg.surface.Surface, series: Series, offset: complex,
 
     for value in values:
         new_value: complex = current_value + value
-        draw_arrow(display,
-                   current_value + offset,
-                   new_value + offset)
+        draw_arrow(display, current_value + offset, new_value + offset)
         current_value = new_value
 
-    path.append(Vector2(
-        complex_to_tuple(current_value + offset)))
+    path.append(Vector2(complex_to_tuple(current_value + offset)))
 
     draw_path(display, path)
 
@@ -135,13 +145,12 @@ def rotate90(num: complex) -> complex:
     return 1j * num.real - num.imag
 
 
-def draw_path(display: pg.surface.Surface,
-              path: List[Vector2]) -> None:
+def draw_path(display: pg.surface.Surface, path: List[Vector2]) -> None:
 
     if len(path) < 2:
         return
 
-    pg.draw.aalines(display, PATH_COLOR, False, path)  # PATH_WIDTH, 
+    pg.draw.aalines(display, PATH_COLOR, False, path)  # PATH_WIDTH,
 
 
 def complex_to_tuple(value: complex) -> Tuple[float, float]:
