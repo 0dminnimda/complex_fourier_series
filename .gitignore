@@ -194,3 +194,4 @@ cython_debug/
 # .ini-files
 config.ini
 
+animation/**/*.jpg
